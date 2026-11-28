@@ -23,6 +23,9 @@ PROFS = {
                  "Endocrinology", "GIT, Nutrition and Metabolism"],
 }
 
+NAVY = "12355B"
+ORANGE = "F5A623"
+
 
 # ------------------------------------------------------------------ calculation
 def rnd(x: float) -> int:
@@ -195,7 +198,7 @@ def add_dashboard(wb, info, bins, total, pass_marks):
 
     ds = wb.create_sheet("Dashboard")
     q, p = "Result!$L$9:$L$2000", "Result!$J$9:$J$2000"
-    blue, light = "2F5BEA", "EAF0FF"
+    blue, light = NAVY, "E9EDF3"
     thin = Side(style="thin", color="BBBBBB")
     box = Border(left=thin, right=thin, top=thin, bottom=thin)
     center = Alignment(horizontal="center", vertical="center")
@@ -253,7 +256,7 @@ def add_dashboard(wb, info, bins, total, pass_marks):
     ch.add_data(Reference(ds, min_col=2, min_row=9, max_row=15), titles_from_data=True)
     ch.set_categories(Reference(ds, min_col=1, min_row=10, max_row=15))
     ch.legend = None
-    ch.series[0].graphicalProperties.solidFill = blue
+    ch.series[0].graphicalProperties.solidFill = ORANGE
     ch.dataLabels = DataLabelList()
     ch.dataLabels.showVal = True
     ch.dataLabels.showCatName = ch.dataLabels.showSerName = ch.dataLabels.showLegendKey = ch.dataLabels.showPercent = False
@@ -281,7 +284,7 @@ def add_reports(wb, info, recs, first, last):
     from openpyxl.worksheet.datavalidation import DataValidation
 
     rs = wb.create_sheet("Student Reports")
-    blue, light = "2F5BEA", "EAF0FF"
+    blue, light = NAVY, "E9EDF3"
     thin = Side(style="thin", color="BBBBBB")
     box = Border(left=thin, right=thin, top=thin, bottom=thin)
     center = Alignment(horizontal="center", vertical="center")
@@ -370,7 +373,7 @@ def add_reports(wb, info, recs, first, last):
     ch.title = "Marks Obtained vs Minimum and Maximum"
     ch.add_data(Reference(rs, min_col=2, max_col=4, min_row=9, max_row=12), titles_from_data=True)
     ch.set_categories(Reference(rs, min_col=1, min_row=10, max_row=12))
-    for s, colr in zip(ch.series, (blue, "BBBBBB", "E5484D")):
+    for s, colr in zip(ch.series, (NAVY, "BBBBBB", ORANGE)):
         s.graphicalProperties.solidFill = colr
     for ax in (ch.x_axis, ch.y_axis):
         ax.delete = False
@@ -458,36 +461,62 @@ def attach_ca(df: pd.DataFrame, ca_df) -> pd.DataFrame:
 
 
 # ------------------------------------------------------------------ UI
+# Design: navy (#12355B) + orange (#F5A623) on light grey-blue, white shadow cards
 CSS = """
 <style>
-.stApp{background:#ffffff}
+.stApp{background:#E9EDF3;color:#1F2A37}
+html,body,[class*="css"]{font-family:'Segoe UI','Open Sans',Verdana,Arial,sans-serif}
 .block-container{padding-top:4rem !important;max-width:1250px}
-.banner{background:#008000;color:#fff;text-align:center;font:700 32px Georgia,'Times New Roman',serif;
-        padding:14px 0 14px;margin:0 0 12px;line-height:1.25}
-.banner small{display:block;font:400 13px Verdana,Arial,sans-serif;opacity:.9;margin-top:2px}
-.lbl{color:#0a7d0a;font:700 17px Verdana,Arial,sans-serif;padding-top:7px}
-.lbl-s{color:#0a7d0a;font:700 14px Verdana,Arial,sans-serif;padding-top:7px}
-.hdr{background:#0a7d0a;color:#fff;text-align:center;font:700 14px Georgia,serif;padding:4px 0;letter-spacing:.6px}
-.st-key-panel1,.st-key-panel2,.st-key-panel3,.st-key-panel4{border:1px solid #22cc22;padding:12px 16px;
-        margin-bottom:10px;background:#fff}
-.st-key-wbox,.st-key-wtbox{border:1px solid #0a7d0a;padding:0 0 8px;background:#fff}
-.st-key-wbox .hdr,.st-key-wtbox .hdr{margin-bottom:8px}
-.st-key-clearbox{background:#0a7d0a;padding:8px;margin-top:8px;text-align:center}
+
+/* top banner */
+.banner{background:linear-gradient(135deg,#12355B 0%,#1c4d80 100%);color:#fff;text-align:center;
+        font:700 32px 'Segoe UI','Open Sans',Arial,sans-serif;padding:18px 0 16px;margin:0 0 16px;line-height:1.25;
+        border-radius:8px;border-bottom:5px solid #F5A623;box-shadow:0 6px 16px rgba(18,53,91,.25)}
+.banner small{display:block;font:400 13px 'Segoe UI',Arial,sans-serif;opacity:.92;margin-top:4px}
+
+/* labels */
+.lbl{color:#12355B;font:700 17px 'Segoe UI',Arial,sans-serif;padding-top:7px}
+.lbl-s{color:#12355B;font:700 14px 'Segoe UI',Arial,sans-serif;padding-top:7px}
+
+/* section header strip */
+.hdr{background:#12355B;color:#fff;text-align:center;font:700 14px 'Segoe UI',Arial,sans-serif;padding:7px 0;
+     letter-spacing:.8px;border-radius:5px;border-left:6px solid #F5A623;border-right:6px solid #F5A623;margin:6px 0}
+
+/* white cards */
+.st-key-panel1,.st-key-panel2,.st-key-panel3,.st-key-panel4{background:#fff;border:none;border-radius:8px;
+        padding:14px 18px;margin-bottom:14px;box-shadow:0 4px 14px rgba(18,53,91,.12)}
+.st-key-wbox,.st-key-wtbox{background:#fff;border:1px solid #d5dce6;border-radius:8px;padding:0 0 8px;
+        box-shadow:0 2px 8px rgba(18,53,91,.08)}
+.st-key-wbox .hdr,.st-key-wtbox .hdr{margin:0 0 8px;border-radius:8px 8px 0 0}
+
+/* clear button box */
+.st-key-clearbox{background:#12355B;padding:8px;margin-top:10px;text-align:center;border-radius:8px}
 .st-key-clearbox div[data-testid="stButton"]{width:100%;display:flex;justify-content:center}
-.st-key-clearbox button{background:#fff !important;color:#0a2a5e !important;font-weight:700;border:1px solid #333 !important;
-        border-radius:2px;font-family:Georgia,serif;width:auto !important;min-width:120px;white-space:nowrap}
-[data-testid="stTextInputRootElement"],[data-testid="stNumberInputContainer"]{border:1.5px solid #5f9ea0 !important;
-        border-radius:4px !important;background:#fff !important}
+.st-key-clearbox button{background:#fff !important;color:#12355B !important;font-weight:700;border:none !important;
+        border-radius:20px;width:auto !important;min-width:120px;white-space:nowrap}
+.st-key-clearbox button:hover{background:#F5A623 !important;color:#fff !important}
+
+/* inputs */
+[data-testid="stTextInputRootElement"],[data-testid="stNumberInputContainer"]{border:1.5px solid #c3cddb !important;
+        border-radius:6px !important;background:#fff !important}
 [data-testid="stTextInputRootElement"]:focus-within,[data-testid="stNumberInputContainer"]:focus-within{
-        border-color:#0a7d0a !important;box-shadow:0 0 0 2px rgba(34,204,34,.25)}
+        border-color:#F5A623 !important;box-shadow:0 0 0 2px rgba(245,166,35,.25)}
 div[data-baseweb="input"],div[data-baseweb="base-input"]{border:none !important;background:#fff !important}
-button[kind="primary"],.stDownloadButton button{background:#0a7d0a !important;color:#fff !important;
-        border:1px solid #065d06 !important;border-radius:4px !important;font-weight:700 !important}
-button[kind="primary"]:hover,.stDownloadButton button:hover{background:#12a012 !important}
-[data-testid="stMetric"]{background:#f1fbf1;border:1px solid #22cc22;border-radius:6px;padding:8px 12px}
-[data-testid="stMetricLabel"] p{color:#0a7d0a;font-weight:700}
-[data-testid="stMetricValue"]{color:#0a4d0a}
-.stRadio label p{color:#0a7d0a;font-weight:700}
+
+/* orange buttons */
+button[kind="primary"],.stDownloadButton button{background:linear-gradient(#FFB020,#F58A1F) !important;color:#fff !important;
+        border:none !important;border-radius:20px !important;font-weight:700 !important;padding:6px 24px !important}
+button[kind="primary"]:hover,.stDownloadButton button:hover{background:linear-gradient(#FFC04D,#F79A3A) !important;
+        box-shadow:0 4px 10px rgba(245,138,31,.4)}
+
+/* KPI cards */
+[data-testid="stMetric"]{background:#fff;border-top:4px solid #F5A623;border-radius:6px;padding:10px 14px;
+        box-shadow:0 4px 12px rgba(18,53,91,.12)}
+[data-testid="stMetricLabel"] p{color:#5b6573;font-weight:600}
+[data-testid="stMetricValue"]{color:#12355B;font-weight:700}
+
+.stRadio label p{color:#12355B;font-weight:700}
+[data-testid="stCaptionContainer"]{color:#5b6573}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -652,7 +681,7 @@ if "out" in st.session_state:
 
         bins = grand_bins(total, pm)
         st.bar_chart(pd.DataFrame({"Students": [sum(a <= r["G"] <= b for r in app) for a, b in bins]},
-                                  index=[f"{a:g}-{b:g}" for a, b in bins]), color="#0a7d0a")
+                                  index=[f"{a:g}-{b:g}" for a, b in bins]), color="#F5A623")
 
         st.markdown('<div class="hdr">RESULT SHEET</div>', unsafe_allow_html=True)
         st.markdown("  \n".join(f"**{line}**" for line in info))
@@ -685,7 +714,7 @@ if "out" in st.session_state:
             st.bar_chart(pd.DataFrame({"Marks Obtained": [s["m"][c] for c in COMPS],
                                        "Minimum": [mn[c] for c in COMPS],
                                        "Maximum": [mx[c] for c in COMPS]}, index=COMPS),
-                         color=["#2F5BEA", "#E5484D", "#BBBBBB"])
+                         color=["#12355B", "#F5A623", "#BBBBBB"])
             txt = f"Roll No. {s['roll']} obtained {s['G']} out of {total:g} marks and is declared {s['status']}."
             if s["need"] != "":
                 txt += f" {s['need']:g} more marks were required to pass."
